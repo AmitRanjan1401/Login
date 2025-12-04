@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Amit Portfolio</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#071126;
+      --muted:#9aa4b2;
+      --accent:#3b82f6;
+      --accent-2:#60a5fa;
+      --success:#34d399;
+      --danger:#fb7185;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --glass-border: rgba(255,255,255,0.04);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(600px 600px at 10% 10%, rgba(59,130,246,0.06), transparent 10%),
+        radial-gradient(500px 400px at 90% 90%, rgba(96,165,250,0.04), transparent 8%),
+        var(--bg);
+      color:#e6eef8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:980px;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      align-items:center;
+    }
+
+    /* Left promo */
+    .promo{
+      padding:34px;
+      border-radius:var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+    }
+    .logo {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .logo .mark{
+      width:52px;height:52px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:20px;
+      box-shadow:0 8px 30px rgba(59,130,246,0.18);
+    }
+    h1{font-size:28px;margin:0 0 8px}
+    p.lead{margin:0;color:var(--muted);line-height:1.6}
+    ul.features{margin-top:18px;color:var(--muted);padding-left:18px}
+    ul.features li{margin:8px 0}
+
+    /* Right card */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      padding:22px;
+      border-radius:16px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+    }
+
+    .tabs{display:flex;gap:8px;margin-bottom:16px}
+    .tab{
+      flex:1;text-align:center;padding:10px;border-radius:10px;font-weight:600;cursor:pointer;
+      background:transparent;border:1px solid transparent;color:var(--muted);
+    }
+    .tab.active{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;box-shadow:0 8px 20px rgba(59,130,246,0.15);
+    }
+
+    form{display:grid;gap:10px}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type="text"], input[type="password"]{
+      width:100%;padding:12px;border-radius:10px;border:1px solid var(--glass-border);
+      background:var(--glass);color:inherit;font-size:15px;outline:none;
+      transition:box-shadow .18s, border-color .18s, transform .08s;
+    }
+    input:focus{border-color:rgba(59,130,246,0.9);box-shadow:0 6px 30px rgba(59,130,246,0.06);transform:translateY(-1px)}
+
+    .row{display:flex;gap:10px}
+    .half{flex:1}
+
+    .actions{display:flex;gap:10px;margin-top:6px;align-items:center}
+    .btn{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer;
+      box-shadow:0 12px 28px rgba(59,130,246,0.12);
+    }
+    .btn.ghost{
+      background:transparent;border:1px solid var(--glass-border);color:var(--muted);font-weight:600;
+    }
+
+    .note{font-size:13px;color:var(--muted);margin-top:8px}
+    .msg{padding:10px;border-radius:10px;font-weight:600;font-size:14px}
+    .msg.error{background:rgba(251,113,133,0.08);color:var(--danger);border:1px solid rgba(251,113,133,0.12)}
+    .msg.success{background:rgba(52,211,153,0.06);color:var(--success);border:1px solid rgba(52,211,153,0.08)}
+
+    .pw-row{display:flex;gap:8px;align-items:center}
+    .pw-toggle{padding:8px;border-radius:8px;border:1px solid var(--glass-border);background:transparent;cursor:pointer}
+    .strength{height:8px;border-radius:8px;background:rgba(255,255,255,0.04);overflow:hidden}
+    .strength > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#fb7185,#f97316,#34d399);transition:width .3s}
+
+    .small{font-size:13px;color:var(--muted)}
+
+    footer.small{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr;max-width:520px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <section class="promo" aria-labelledby="promo-title">
+      <div class="logo">
+        <div class="mark">AR</div>
+        <div>
+          <div style="font-weight:700">Amit Ranjan</div>
+          <div style="font-size:13px;color:var(--muted)">portfolio admin — client-side demo</div>
+        </div>
+      </div>
+
+      <h1 id="promo-title">Secure-ish Admin (Local)</h1>
+      <p class="lead">Yeh admin panel GitHub Pages par bina backend ke chalta hai. Account create karke login karo — phir tumhari portfolio site khul jayegi.</p>
+
+      <ul class="features">
+        <li>Account create & login (localStorage)</li>
+        <li>Password strength indicator + show/hide</li>
+        <li>Friendly messages — “Best of luck!” on success</li>
+        <li>Mobile responsive & accessible</li>
+      </ul>
+
+      <footer class="small">Note: For real security use Firebase Auth / backend. Main help kar dunga agar chaho.</footer>
+    </section>
+
+    <aside class="card" aria-labelledby="card-title">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-weight:700" id="card-title">Account</div>
+          <div style="font-size:13px;color:var(--muted)">Create & Login</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">Site: amitranjan1401.github.io/portfolio</div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Account tabs">
+        <button class="tab active" data-tab="login" role="tab" aria-selected="true">Login</button>
+        <button class="tab" data-tab="create" role="tab" aria-selected="false">Create Account</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginPanel">
+        <form id="loginForm" onsubmit="return false;">
+          <label for="loginId">Admin ID</label>
+          <input id="loginId" type="text" autocomplete="username" placeholder="Enter your ID" />
+
+          <label for="loginPass">Password</label>
+          <div class="pw-row">
+            <input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter password" />
+            <button type="button" class="pw-toggle" id="toggleLoginPw" aria-pressed="false">Show</button>
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="loginBtn" type="button">Login</button>
+            <button class="btn ghost" id="toCreate" type="button">Create new</button>
+          </div>
+
+          <p id="loginMsg" class="msg" style="display:none;margin-top:12px"></p>
+          <p class="note">Login success par tumhe portfolio khol ke dunga. (Client-side redirect)</p>
+        </form>
+      </div>
+
+      <!-- CREATE -->
+      <div id="createPanel" style="display:none">
+        <form id="createForm" onsubmit="return false;">
+          <label for="newId">Choose Admin ID</label>
+          <input id="newId" type="text" autocomplete="username" placeholder="e.g. amit" />
+
+          <label for="newPass">Choose Password</label>
+          <div class="pw-row">
+            <input id="newPass" type="password" autocomplete="new-password" placeholder="At least 6 chars" />
+            <button type="button" class="pw-toggle" id="toggleNewPw">Show</button>
+          </div>
+
+          <label for="confirmPass">Confirm Password</label>
+          <input id="confirmPass" type="password" autocomplete="new-password" placeholder="Repeat password" />
+
+          <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+            <div style="flex:1">
+              <div class="small">Password strength</div>
+              <div class="strength" aria-hidden="true"><i id="strengthBar"></i></div>
+            </div>
+            <div style="width:120px;text-align:right">
+              <button class="btn" id="createBtn" type="button">Create</button>
+            </div>
+          </div>
+
+          <p id="createMsg" class="msg" style="display:none;margin-top:12px"></p>
+          <p class="note">Account browser localStorage me secure nahi — production ke liye backend chahiye.</p>
+        </form>
+      </div>
+
+      <footer class="small">Made with care • Need Firebase? Ask and I'll add it ✅</footer>
+    </aside>
+  </div>
+
+<script>
+  const TARGET_URL = "https://amitranjan1401.github.io/portfolio/";
+  // Tabs
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const tab = t.getAttribute('data-tab');
+      document.getElementById('loginPanel').style.display = tab==='login' ? 'block' : 'none';
+      document.getElementById('createPanel').style.display = tab==='create' ? 'block' : 'none';
+    });
+  });
+
+  // toggle pw
+  function toggleInput(id, btn){
+    const inp = document.getElementById(id);
+    const pressed = btn.getAttribute('aria-pressed') === 'true';
+    if(pressed){
+      inp.type = 'password';
+      btn.textContent = 'Show';
+      btn.setAttribute('aria-pressed','false');
+    } else {
+      inp.type = 'text';
+      btn.textContent = 'Hide';
+      btn.setAttribute('aria-pressed','true');
+    }
+  }
+  document.getElementById('toggleLoginPw').addEventListener('click',()=>{
+    toggleInput('loginPass', document.getElementById('toggleLoginPw'));
+  });
+  document.getElementById('toggleNewPw').addEventListener('click',()=>{
+    toggleInput('newPass', document.getElementById('toggleNewPw'));
+  });
+
+  // password strength (very light)
+  function passwordStrength(pw){
+    let score = 0;
+    if(!pw) return 0;
+    if(pw.length >= 6) score += 1;
+    if(/[A-Z]/.test(pw)) score += 1;
+    if(/[0-9]/.test(pw)) score += 1;
+    if(/[^A-Za-z0-9]/.test(pw)) score += 1;
+    return score; // 0..4
+  }
+  function updateStrengthBar(pw){
+    const s = passwordStrength(pw);
+    const el = document.getElementById('strengthBar');
+    const percent = (s/4)*100;
+    el.style.width = percent + '%';
+  }
+  document.getElementById('newPass').addEventListener('input', (e)=> updateStrengthBar(e.target.value));
+
+  // Create account
+  document.getElementById('createBtn').addEventListener('click', ()=>{
+    const id = document.getElementById('newId').value.trim();
+    const pass = document.getElementById('newPass').value;
+    const conf = document.getElementById('confirmPass').value;
+    const msg = document.getElementById('createMsg');
+    msg.style.display = 'none';
+    msg.className = 'msg';
+
+    if(!id || !pass || !conf){
+      msg.textContent = 'Sab fields bhar do.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+      return;
+    }
+    if(pass.length < 6){
+      msg.textContent = 'Password kam se kam 6 characters ka hona chahiye.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+      return;
+    }
+    if(pass !== conf){
+      msg.textContent = 'Password match nahi kar rahe.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+      return;
+    }
+
+    try{
+      // store
+      localStorage.setItem('PORTFOLIO_ADMIN_ID', id);
+      localStorage.setItem('PORTFOLIO_ADMIN_PASS', pass);
+      msg.textContent = 'Account ban gaya — Best of luck! 🎉';
+      msg.classList.add('success');
+      msg.style.display = 'block';
+
+      // auto switch to login after short delay
+      setTimeout(()=>{
+        // switch to login tab
+        document.querySelector('[data-tab="login"]').click();
+        document.getElementById('loginId').value = id;
+        document.getElementById('loginPass').value = '';
+        msg.style.display = 'none';
+      }, 1200);
+    }catch(e){
+      msg.textContent = 'Storage failed — browser settings check karo.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+    }
+  });
+
+  // Login
+  document.getElementById('loginBtn').addEventListener('click', ()=>{
+    const id = document.getElementById('loginId').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const msg = document.getElementById('loginMsg');
+    msg.style.display = 'none';
+    msg.className = 'msg';
+
+    const savedId = localStorage.getItem('PORTFOLIO_ADMIN_ID');
+    const savedPass = localStorage.getItem('PORTFOLIO_ADMIN_PASS');
+
+    if(!savedId || !savedPass){
+      msg.textContent = 'Koi account nahi mila — pehle account create karo.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+      return;
+    }
+    if(!id || !pass){
+      msg.textContent = 'ID aur Password dono dalein.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+      return;
+    }
+
+    if(id === savedId && pass === savedPass){
+      msg.textContent = 'Login successful — Best of luck! 🌟';
+      msg.classList.add('success');
+      msg.style.display = 'block';
+
+      // save last login time
+      try{
+        const now = new Date().toISOString().slice(0,16).replace('T',' ');
+        localStorage.setItem('amit_portfolio_last_login', now);
+      }catch(e){}
+
+      // redirect after short pause so user sees message
+      setTimeout(()=>{ window.location.href = TARGET_URL; }, 1200);
+    } else {
+      msg.textContent = 'Invalid ID ya Password.';
+      msg.classList.add('error');
+      msg.style.display = 'block';
+    }
+  });
+
+  // helper: quick switch to create
+  document.getElementById('toCreate').addEventListener('click', ()=> document.querySelector('[data-tab="create"]').click());
+
+  // accessibility: enter key submits
+  ['loginPass','loginId'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') document.getElementById('loginBtn').click();
+    });
+  });
+  ['newId','newPass','confirmPass'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') document.getElementById('createBtn').click();
+    });
+  });
+
+  // prefill login fields if saved
+  (function prefill(){
+    const savedId = localStorage.getItem('PORTFOLIO_ADMIN_ID');
+    if(savedId) document.getElementById('loginId').value = savedId;
+  })();
+</script>
+</body>
+</html>
