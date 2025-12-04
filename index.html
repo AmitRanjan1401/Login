@@ -38,47 +38,21 @@
 
     .wrap{
       width:100%;
-      max-width:980px;
-      display:grid;
-      grid-template-columns: 1fr 420px;
-      gap:28px;
-      align-items:center;
+      max-width:420px;
+      display:block;
     }
 
-    /* Left promo */
-    .promo{
-      padding:34px;
-      border-radius:var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid var(--glass-border);
-      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
-    }
-    .logo {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:18px;
-    }
-    .logo .mark{
-      width:52px;height:52px;border-radius:10px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:20px;
-      box-shadow:0 8px 30px rgba(59,130,246,0.18);
-    }
-    h1{font-size:28px;margin:0 0 8px}
-    p.lead{margin:0;color:var(--muted);line-height:1.6}
-    ul.features{margin-top:18px;color:var(--muted);padding-left:18px}
-    ul.features li{margin:8px 0}
-
-    /* Right card */
+    /* Right card (now the only card) */
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       border:1px solid var(--glass-border);
       padding:22px;
       border-radius:16px;
       box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      margin: 0 auto;
     }
 
+    .header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
     .tabs{display:flex;gap:8px;margin-bottom:16px}
     .tab{
       flex:1;text-align:center;padding:10px;border-radius:10px;font-weight:600;cursor:pointer;
@@ -125,37 +99,15 @@
 
     footer.small{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
 
-    @media (max-width:900px){
-      .wrap{grid-template-columns:1fr;max-width:520px}
+    @media (max-width:520px){
+      .wrap{max-width:100%}
     }
   </style>
 </head>
 <body>
   <div class="wrap" role="main">
-    <section class="promo" aria-labelledby="promo-title">
-      <div class="logo">
-        <div class="mark">AR</div>
-        <div>
-          <div style="font-weight:700">Amit Ranjan</div>
-          <div style="font-size:13px;color:var(--muted)">portfolio admin — client-side demo</div>
-        </div>
-      </div>
-
-      <h1 id="promo-title">Secure-ish Admin (Local)</h1>
-      <p class="lead">Yeh admin panel GitHub Pages par bina backend ke chalta hai. Account create karke login karo — phir tumhari portfolio site khul jayegi.</p>
-
-      <ul class="features">
-        <li>Account create & login (localStorage)</li>
-        <li>Password strength indicator + show/hide</li>
-        <li>Friendly messages — “Best of luck!” on success</li>
-        <li>Mobile responsive & accessible</li>
-      </ul>
-
-      <footer class="small">Note: For real security use Firebase Auth / backend. Main help kar dunga agar chaho.</footer>
-    </section>
-
     <aside class="card" aria-labelledby="card-title">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="header-row">
         <div>
           <div style="font-weight:700" id="card-title">Account</div>
           <div style="font-size:13px;color:var(--muted)">Create & Login</div>
@@ -177,7 +129,7 @@
           <label for="loginPass">Password</label>
           <div class="pw-row">
             <input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter password" />
-            <button type="button" class="pw-toggle" id="toggleLoginPw" aria-pressed="false">Show</button>
+            <button type="button" class="pw-toggle" id="toggleLoginPw" data-target="loginPass" aria-pressed="false">Show</button>
           </div>
 
           <div class="actions">
@@ -199,7 +151,7 @@
           <label for="newPass">Choose Password</label>
           <div class="pw-row">
             <input id="newPass" type="password" autocomplete="new-password" placeholder="At least 6 chars" />
-            <button type="button" class="pw-toggle" id="toggleNewPw">Show</button>
+            <button type="button" class="pw-toggle" id="toggleNewPw" data-target="newPass" aria-pressed="false">Show</button>
           </div>
 
           <label for="confirmPass">Confirm Password</label>
@@ -216,49 +168,50 @@
           </div>
 
           <p id="createMsg" class="msg" style="display:none;margin-top:12px"></p>
-          <p class="note">Account browser localStorage me secure nahi — production ke liye backend chahiye.</p>
+          <p class="note"></p>
         </form>
       </div>
 
-      <footer class="small">Made with care • Need Firebase? Ask and I'll add it ✅</footer>
+      <footer class="small">Thank You</footer>
     </aside>
   </div>
 
 <script>
   const TARGET_URL = "https://amitranjan1401.github.io/portfolio/";
+  const KEY_ACCOUNT = 'PORTFOLIO_ADMIN_ACCOUNT_V2';
+
+  // small helper
+  const el = id => document.getElementById(id);
+
   // Tabs
   document.querySelectorAll('.tab').forEach(t=>{
     t.addEventListener('click',()=>{
       document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
       t.classList.add('active');
       const tab = t.getAttribute('data-tab');
-      document.getElementById('loginPanel').style.display = tab==='login' ? 'block' : 'none';
-      document.getElementById('createPanel').style.display = tab==='create' ? 'block' : 'none';
+      if(el('loginPanel') && el('createPanel')){
+        el('loginPanel').style.display = tab==='login' ? 'block' : 'none';
+        el('createPanel').style.display = tab==='create' ? 'block' : 'none';
+      }
     });
   });
 
-  // toggle pw
-  function toggleInput(id, btn){
-    const inp = document.getElementById(id);
-    const pressed = btn.getAttribute('aria-pressed') === 'true';
-    if(pressed){
-      inp.type = 'password';
-      btn.textContent = 'Show';
-      btn.setAttribute('aria-pressed','false');
-    } else {
-      inp.type = 'text';
-      btn.textContent = 'Hide';
-      btn.setAttribute('aria-pressed','true');
-    }
-  }
-  document.getElementById('toggleLoginPw').addEventListener('click',()=>{
-    toggleInput('loginPass', document.getElementById('toggleLoginPw'));
-  });
-  document.getElementById('toggleNewPw').addEventListener('click',()=>{
-    toggleInput('newPass', document.getElementById('toggleNewPw'));
+  // universal toggle (using data-target)
+  document.querySelectorAll('.pw-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const tgt = btn.getAttribute('data-target');
+      const input = el(tgt);
+      if(!input) return;
+      const pressed = btn.getAttribute('aria-pressed') === 'true';
+      if(pressed){
+        input.type = 'password'; btn.textContent='Show'; btn.setAttribute('aria-pressed','false');
+      } else {
+        input.type = 'text'; btn.textContent='Hide'; btn.setAttribute('aria-pressed','true');
+      }
+    });
   });
 
-  // password strength (very light)
+  // strength meter
   function passwordStrength(pw){
     let score = 0;
     if(!pw) return 0;
@@ -266,131 +219,96 @@
     if(/[A-Z]/.test(pw)) score += 1;
     if(/[0-9]/.test(pw)) score += 1;
     if(/[^A-Za-z0-9]/.test(pw)) score += 1;
-    return score; // 0..4
+    return score;
   }
   function updateStrengthBar(pw){
-    const s = passwordStrength(pw);
-    const el = document.getElementById('strengthBar');
-    const percent = (s/4)*100;
-    el.style.width = percent + '%';
+    const elBar = el('strengthBar');
+    if(!elBar) return;
+    const pct = (passwordStrength(pw)/4)*100;
+    elBar.style.width = pct + '%';
   }
-  document.getElementById('newPass').addEventListener('input', (e)=> updateStrengthBar(e.target.value));
+  if(el('newPass')) el('newPass').addEventListener('input', e=>updateStrengthBar(e.target.value));
 
-  // Create account
-  document.getElementById('createBtn').addEventListener('click', ()=>{
-    const id = document.getElementById('newId').value.trim();
-    const pass = document.getElementById('newPass').value;
-    const conf = document.getElementById('confirmPass').value;
-    const msg = document.getElementById('createMsg');
-    msg.style.display = 'none';
-    msg.className = 'msg';
+  // simple storage scheme (demo)
+  function saveAccount(obj){ localStorage.setItem(KEY_ACCOUNT, JSON.stringify(obj)); }
+  function readAccount(){ const s = localStorage.getItem(KEY_ACCOUNT); return s ? JSON.parse(s) : null; }
 
-    if(!id || !pass || !conf){
-      msg.textContent = 'Sab fields bhar do.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
-      return;
-    }
-    if(pass.length < 6){
-      msg.textContent = 'Password kam se kam 6 characters ka hona chahiye.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
-      return;
-    }
-    if(pass !== conf){
-      msg.textContent = 'Password match nahi kar rahe.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
-      return;
-    }
+  function showMsg(id, text, type='error'){
+    const m = el(id);
+    if(!m) return;
+    m.className = 'msg ' + (type==='success' ? 'success' : 'error');
+    m.textContent = text;
+    m.style.display = 'block';
+  }
+  function hideMsg(id){ const m = el(id); if(m) m.style.display = 'none'; }
 
+  // Create account (kept simple here; earlier improved version used PBKDF2)
+  if(el('createBtn')) el('createBtn').addEventListener('click', ()=>{
+    hideMsg('createMsg');
     try{
-      // store
+      const id = (el('newId')||{}).value?.trim() || '';
+      const pass = (el('newPass')||{}).value || '';
+      const conf = (el('confirmPass')||{}).value || '';
+      if(!id || !pass || !conf){ showMsg('createMsg','Sab fields bhar do.'); return; }
+      if(pass.length < 6){ showMsg('createMsg','Password kam se kam 6 characters ka hona chahiye.'); return; }
+      if(pass !== conf){ showMsg('createMsg','Password match nahi kar rahe.'); return; }
+
+      // store (demo - plain text) — if you want hashed version, tell me and I'll add PBKDF2
       localStorage.setItem('PORTFOLIO_ADMIN_ID', id);
       localStorage.setItem('PORTFOLIO_ADMIN_PASS', pass);
-      msg.textContent = 'Account ban gaya — Best of luck! 🎉';
-      msg.classList.add('success');
-      msg.style.display = 'block';
+      showMsg('createMsg','Account ban gaya — Best of luck! 🎉','success');
 
-      // auto switch to login after short delay
       setTimeout(()=>{
-        // switch to login tab
-        document.querySelector('[data-tab="login"]').click();
-        document.getElementById('loginId').value = id;
-        document.getElementById('loginPass').value = '';
-        msg.style.display = 'none';
-      }, 1200);
+        const loginTab = document.querySelector('[data-tab="login"]');
+        if(loginTab) loginTab.click();
+        if(el('loginId')) el('loginId').value = id;
+        if(el('loginPass')) el('loginPass').value = '';
+        hideMsg('createMsg');
+      }, 900);
     }catch(e){
-      msg.textContent = 'Storage failed — browser settings check karo.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
+      console.error(e);
+      showMsg('createMsg','Storage failed — browser settings check karo.');
     }
   });
 
   // Login
-  document.getElementById('loginBtn').addEventListener('click', ()=>{
-    const id = document.getElementById('loginId').value.trim();
-    const pass = document.getElementById('loginPass').value;
-    const msg = document.getElementById('loginMsg');
-    msg.style.display = 'none';
-    msg.className = 'msg';
-
-    const savedId = localStorage.getItem('PORTFOLIO_ADMIN_ID');
-    const savedPass = localStorage.getItem('PORTFOLIO_ADMIN_PASS');
-
-    if(!savedId || !savedPass){
-      msg.textContent = 'Koi account nahi mila — pehle account create karo.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
-      return;
-    }
-    if(!id || !pass){
-      msg.textContent = 'ID aur Password dono dalein.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
-      return;
-    }
-
-    if(id === savedId && pass === savedPass){
-      msg.textContent = 'Login successful — Best of luck! 🌟';
-      msg.classList.add('success');
-      msg.style.display = 'block';
-
-      // save last login time
-      try{
-        const now = new Date().toISOString().slice(0,16).replace('T',' ');
-        localStorage.setItem('amit_portfolio_last_login', now);
-      }catch(e){}
-
-      // redirect after short pause so user sees message
-      setTimeout(()=>{ window.location.href = TARGET_URL; }, 1200);
-    } else {
-      msg.textContent = 'Invalid ID ya Password.';
-      msg.classList.add('error');
-      msg.style.display = 'block';
+  if(el('loginBtn')) el('loginBtn').addEventListener('click', ()=>{
+    hideMsg('loginMsg');
+    try{
+      const id = (el('loginId')||{}).value?.trim() || '';
+      const pass = (el('loginPass')||{}).value || '';
+      const savedId = localStorage.getItem('PORTFOLIO_ADMIN_ID');
+      const savedPass = localStorage.getItem('PORTFOLIO_ADMIN_PASS');
+      if(!savedId || !savedPass){ showMsg('loginMsg','Koi account nahi mila — pehle account create karo.'); return; }
+      if(!id || !pass){ showMsg('loginMsg','ID aur Password dono dalein.'); return; }
+      if(id === savedId && pass === savedPass){
+        showMsg('loginMsg','Login successful — Best of luck! 🌟','success');
+        try{ const now = new Date().toISOString().slice(0,16).replace('T',' '); localStorage.setItem('amit_portfolio_last_login', now); }catch(e){}
+        setTimeout(()=>{ window.location.href = TARGET_URL; }, 900);
+      } else {
+        showMsg('loginMsg','Invalid ID ya Password.');
+      }
+    }catch(e){
+      console.error(e);
+      showMsg('loginMsg','Login process failed — console check karo.');
     }
   });
 
-  // helper: quick switch to create
-  document.getElementById('toCreate').addEventListener('click', ()=> document.querySelector('[data-tab="create"]').click());
+  // quick switch
+  if(el('toCreate')) el('toCreate').addEventListener('click', ()=>{ const t = document.querySelector('[data-tab="create"]'); if(t) t.click(); });
 
-  // accessibility: enter key submits
+  // enter key accessibility
   ['loginPass','loginId'].forEach(id=>{
-    document.getElementById(id).addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter') document.getElementById('loginBtn').click();
-    });
+    const n = el(id); if(!n) return;
+    n.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ const b = el('loginBtn'); if(b) b.click(); } });
   });
   ['newId','newPass','confirmPass'].forEach(id=>{
-    document.getElementById(id).addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter') document.getElementById('createBtn').click();
-    });
+    const n = el(id); if(!n) return;
+    n.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ const b = el('createBtn'); if(b) b.click(); } });
   });
 
-  // prefill login fields if saved
-  (function prefill(){
-    const savedId = localStorage.getItem('PORTFOLIO_ADMIN_ID');
-    if(savedId) document.getElementById('loginId').value = savedId;
-  })();
+  // prefill
+  (function prefill(){ const sid = localStorage.getItem('PORTFOLIO_ADMIN_ID'); if(sid && el('loginId')) el('loginId').value = sid; })();
 </script>
 </body>
 </html>
