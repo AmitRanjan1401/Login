@@ -91,7 +91,22 @@
     .msg.success{background:rgba(52,211,153,0.06);color:var(--success);border:1px solid rgba(52,211,153,0.08)}
 
     .pw-row{display:flex;gap:8px;align-items:center}
-    .pw-toggle{padding:8px;border-radius:8px;border:1px solid var(--glass-border);background:transparent;cursor:pointer}
+    /* ---- Blue gradient pw-toggle ---- */
+    .pw-toggle{
+      padding:8px 12px;
+      border-radius:8px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border: 1px solid rgba(59,130,246,0.4);
+      color: #fff;
+      cursor: pointer;
+      font-size:13px;
+      font-weight:600;
+      box-shadow: 0 6px 18px rgba(59,130,246,0.18);
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .pw-toggle:hover{ opacity:0.95; transform: translateY(-1px); }
+    .pw-toggle:active{ transform: scale(0.98); }
+
     .strength{height:8px;border-radius:8px;background:rgba(255,255,255,0.04);overflow:hidden}
     .strength > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#fb7185,#f97316,#34d399);transition:width .3s}
 
@@ -138,7 +153,6 @@
           </div>
 
           <p id="loginMsg" class="msg" style="display:none;margin-top:12px"></p>
-          <p class="note">Login success par tumhe portfolio khol ke dunga. (Client-side redirect)</p>
         </form>
       </div>
 
@@ -168,7 +182,6 @@
           </div>
 
           <p id="createMsg" class="msg" style="display:none;margin-top:12px"></p>
-          <p class="note"></p>
         </form>
       </div>
 
@@ -196,18 +209,25 @@
     });
   });
 
-  // universal toggle (using data-target)
+  // universal toggle (using data-target) — robust: set button label based on actual input.type
   document.querySelectorAll('.pw-toggle').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const tgt = btn.getAttribute('data-target');
       const input = el(tgt);
       if(!input) return;
-      const pressed = btn.getAttribute('aria-pressed') === 'true';
-      if(pressed){
-        input.type = 'password'; btn.textContent='Show'; btn.setAttribute('aria-pressed','false');
+
+      // If input is password -> show text, else hide
+      if(input.type === 'password'){
+        input.type = 'text';
+        btn.textContent = 'Hide';
+        btn.setAttribute('aria-pressed','true');
       } else {
-        input.type = 'text'; btn.textContent='Hide'; btn.setAttribute('aria-pressed','true');
+        input.type = 'password';
+        btn.textContent = 'Show';
+        btn.setAttribute('aria-pressed','false');
       }
+      // keep focus on the input for convenience
+      input.focus({preventScroll:true});
     });
   });
 
